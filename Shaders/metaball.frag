@@ -11,23 +11,22 @@ uniform vec4 blobColors[100];
 
 float metaball(vec2 pos, vec2 center, float radius) {
     float dist = length(pos - center);
-    if (dist > radius * 3.0) return 0.0;
+    if (dist > radius * 4.0) return 0.0;
     
-    // Modified metaball equation for more organic shapes
-    // Using a higher power for smoother, more blob-like transitions
+    // Smoother metaball equation for organic morphing
     float normalizedDist = dist / radius;
     float influence = 0.0;
     
     if (normalizedDist < 1.0) {
-        // Core influence with smooth falloff
-        influence = pow(1.0 - normalizedDist * normalizedDist, 3.0);
-    } else if (normalizedDist < 2.5) {
-        // Extended influence for better merging
-        float t = (normalizedDist - 1.0) / 1.5;
-        influence = 0.2 * pow(1.0 - t, 4.0);
+        // Strong core influence
+        influence = pow(1.0 - normalizedDist, 2.0);
+    } else if (normalizedDist < 3.0) {
+        // Extended smooth falloff for better morphing
+        float t = (normalizedDist - 1.0) / 2.0;
+        influence = 0.5 * pow(1.0 - t, 3.0);
     }
     
-    return influence * radius;
+    return influence * radius * radius / 20.0; // Normalize influence
 }
 
 void main() {
@@ -43,8 +42,8 @@ void main() {
         totalColor += blobColors[i] * influence;
     }
     
-    // Smooth threshold for better blending
-    float threshold = 20.0;
+    // Lower threshold for smoother morphing
+    float threshold = 1.0;
     
     // Don't discard pixels - use alpha blending for smooth edges
     if (totalInfluence < 0.1) {

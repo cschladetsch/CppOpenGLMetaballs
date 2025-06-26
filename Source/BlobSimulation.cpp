@@ -122,7 +122,8 @@ void BlobSimulation::update(float dt) {
         }
     }
     
-    checkMerging();
+    // Don't merge blobs - let the metaball shader handle visual morphing
+    // checkMerging();
 }
 
 void BlobSimulation::applyForces() {
@@ -152,7 +153,13 @@ void BlobSimulation::applyForces() {
             sf::Vector2f direction = diff / dist;
             
             float forceMagnitude = gravityStrength * blobs[i].getMass() * blobs[j].getMass() / distSq;
-            forceMagnitude = std::min(forceMagnitude, 1000.0f); // Higher force cap for more movement
+            
+            // Add extra attraction when very close for sticky morphing
+            if (dist < (blobs[i].getRadius() + blobs[j].getRadius()) * 1.5f) {
+                forceMagnitude *= 2.0f; // Double attraction when close
+            }
+            
+            forceMagnitude = std::min(forceMagnitude, 2000.0f); // Higher force cap for more movement
             
             sf::Vector2f force = direction * forceMagnitude;
             blobs[i].applyForce(force);
