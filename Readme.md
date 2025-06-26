@@ -1,23 +1,27 @@
 # Blob Simulation
 
-A C++23 metaball blob simulation using SFML, Boost, and OpenGL shaders. Features fluid-like blobs that morph and merge together while conserving mass, creating organic animations with physics-based movement.
+A C++23 metaball blob simulation using SFML and OpenGL shaders. Features fluid-like blobs that smoothly morph together using GPU-accelerated metaball rendering, creating organic animations with gravitational physics at 60Hz.
+
+## Demo
+
+![Demo](Resources/Demo1.gif]
 
 ## Features
 
-- **Metaball Rendering**: Blobs morph together smoothly using GPU shaders
-- **Constant Density**: All blobs maintain the same density (mass = density × π × radius²)
-- **Verlet Integration**: Stable physics simulation at 60Hz
-- **Mass Conservation**: Total mass is preserved when blobs merge
-- **Color Blending**: Smooth color mixing based on blob influence
-- **Wrap-Around Boundaries**: Seamless screen edge wrapping
-- **Dynamic Morphing**: Non-circular organic shapes during interactions
-- **Gravitational Attraction**: Blobs attract each other based on mass
+- **Smooth Metaball Morphing**: GPU-accelerated shader creates organic blob fusion without discrete merging
+- **Transparent Edges**: Blobs fade smoothly to transparency with alpha blending
+- **Gravitational Physics**: Mass-based attraction with stronger forces when blobs are close
+- **Constant Density**: All blobs maintain uniform density (mass = density × π × radius²)
+- **Verlet Integration**: Stable physics simulation at 60Hz with minimal damping
+- **Wrap-Around Boundaries**: Seamless screen edge wrapping with proper force calculations
+- **Dynamic Color Blending**: Colors mix based on metaball influence in the shader
+- **Gentle Collision Response**: Minimal separation prevents complete overlap while allowing morphing
 
 ## Requirements
 
 - C++23 compatible compiler (Clang++ by default, GCC supported)
 - CMake 3.20+
-- Boost 1.70+
+- Ninja build system
 - OpenGL 3.3+
 - X11 (Linux)
 
@@ -32,7 +36,7 @@ Options:
 - `--help` - Show build options
 
 The build script will:
-1. Configure with CMake
+1. Configure with CMake using Ninja generator
 2. Compile with Clang++ (or GCC if specified)
 3. Run all unit tests
 4. Copy shader files to build directory
@@ -67,16 +71,19 @@ Examples:
 
 ### Physics
 - **Density**: All blobs have uniform density of 1.0
-- **Gravity**: Blobs attract with force = G × m₁ × m₂ / r²
-- **Collisions**: Elastic collisions with 0.5 restitution
-- **Merging**: Blobs merge when overlapping by 40% or more
+- **Gravity**: Strong attraction with force = 2000 × m₁ × m₂ / r²
+- **Close-Range Forces**: Double attraction when blobs are within 1.5× combined radii
+- **Collision Response**: Minimal separation (2% of overlap) to allow visual morphing
+- **No Discrete Merging**: Blobs maintain individual physics while visually morphing
 - **Integration**: Verlet integration with 0.995 damping factor
 
 ### Rendering
-- **Metaball Shader**: GPU-based metaball equation for smooth morphing
-- **Influence Function**: f(x,y) = r² / ((x-cx)² + (y-cy)²)
-- **Surface Threshold**: Configurable threshold for blob boundaries
-- **Color Blending**: Weighted average based on metaball influence
+- **Metaball Shader**: Smooth influence functions with extended falloff range
+- **Influence Function**: Quadratic core with cubic falloff for organic shapes
+- **Alpha Blending**: Transparent edges with smoothstep functions
+- **Surface Threshold**: Low threshold (1.0) for smooth visual blending
+- **Color Mixing**: Influence-weighted color averaging in shader
+- **Render Pipeline**: Full-screen quad with per-pixel metaball evaluation
 
 ### Architecture
 - **Blob Class**: Individual blob physics and properties
@@ -113,15 +120,17 @@ const int numBlobs = 30; // Change this value
 
 ### Adjusting Physics
 Modify constants in `Source/BlobSimulation.cpp`:
-- `gravityStrength`: Attraction force between blobs
-- `minDistance`: Minimum distance for force calculations
+- `gravityStrength`: Base attraction force (currently 2000.0)
+- `minDistance`: Minimum distance for force calculations (20.0)
 - `radiusDist`: Range of blob sizes (10-40 pixels)
+- Close-range force multiplier in `applyForces()`
 
 ### Tweaking Visuals
 Edit `Shaders/metaball.frag`:
-- `threshold`: Surface definition threshold
-- Edge smoothing parameters
-- Color blending algorithm
+- `threshold`: Surface definition threshold (1.0 for smooth morphing)
+- Influence falloff range and curve in `metaball()` function
+- Alpha blending parameters for edge transparency
+- Color mixing weights based on influence
 
 ## License
 
