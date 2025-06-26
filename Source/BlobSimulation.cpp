@@ -185,7 +185,8 @@ void BlobSimulation::checkMerging() {
             }
             
             float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y);
-            float mergeThreshold = (blobs[i].getRadius() + blobs[j].getRadius()) * 0.95f; // Very easy merging
+            float sumRadii = blobs[i].getRadius() + blobs[j].getRadius();
+            float mergeThreshold = sumRadii; // Merge when overlapping at all
             
             if (distance < mergeThreshold) {
                 newBlobs.push_back(Blob::merge(blobs[i], blobs[j]));
@@ -200,7 +201,6 @@ void BlobSimulation::checkMerging() {
             newBlobs.push_back(blobs[i]);
         }
     }
-    
     
     blobs = std::move(newBlobs);
 }

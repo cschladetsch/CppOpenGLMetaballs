@@ -67,19 +67,8 @@ void Blob::handleCollision(Blob& other) {
         other.distortionDirection = -direction;
         
         if (distance < minDistance) {
-            // Minimal separation to prevent complete overlap
-            float overlap = minDistance - distance;
-            sf::Vector2f separation = direction * (overlap * 0.05f); // Very small separation
-            
-            float totalMass = mass + other.mass;
-            float massRatio1 = other.mass / totalMass;
-            float massRatio2 = mass / totalMass;
-            
-            position -= separation * massRatio1;
-            other.position += separation * massRatio2;
-            
-            // No velocity damping - let gravity do the work
-            // This removes the bouncing/repelling behavior
+            // Don't separate blobs - let them overlap for merging
+            // Only apply distortion effects, no physical separation
         }
     }
 }
