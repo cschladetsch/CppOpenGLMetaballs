@@ -68,7 +68,7 @@ void Blob::handleCollision(Blob& other) {
         
         if (distance < minDistance) {
             float overlap = minDistance - distance;
-            sf::Vector2f separation = direction * (overlap * 0.5f);
+            sf::Vector2f separation = direction * (overlap * 0.2f); // Reduced separation
             
             float totalMass = mass + other.mass;
             float massRatio1 = other.mass / totalMass;
@@ -80,17 +80,19 @@ void Blob::handleCollision(Blob& other) {
             sf::Vector2f v1 = position - previousPosition;
             sf::Vector2f v2 = other.position - other.previousPosition;
             
-            float restitution = 0.5f; // Lower restitution for less bouncy collisions
+            float restitution = 0.05f; // Very low restitution for sticky collisions
             sf::Vector2f relativeVelocity = v1 - v2;
             float velocityAlongNormal = relativeVelocity.x * direction.x + relativeVelocity.y * direction.y;
             
-            if (velocityAlongNormal > 0) return;
+            // Only apply collision response if moving towards each other fast
+            if (velocityAlongNormal > -1.0f) return;
             
             float impulse = 2 * velocityAlongNormal / totalMass;
             sf::Vector2f impulseVector = impulse * direction * restitution;
             
-            previousPosition += impulseVector * other.mass;
-            other.previousPosition -= impulseVector * mass;
+            // Apply very small impulse to minimize bouncing
+            previousPosition += impulseVector * other.mass * 0.1f;
+            other.previousPosition -= impulseVector * mass * 0.1f;
         }
     }
 }

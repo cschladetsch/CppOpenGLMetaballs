@@ -126,8 +126,8 @@ void BlobSimulation::update(float dt) {
 }
 
 void BlobSimulation::applyForces() {
-    const float gravityStrength = 500.0f; // Moderate gravity for visible attraction
-    const float minDistance = 30.0f; // Minimum distance to prevent extreme forces
+    const float gravityStrength = 2000.0f; // Strong gravity for clear attraction
+    const float minDistance = 20.0f; // Minimum distance to prevent extreme forces
     auto windowSize = window.getSize();
     
     for (size_t i = 0; i < blobs.size(); ++i) {
