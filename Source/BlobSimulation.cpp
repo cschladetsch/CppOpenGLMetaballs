@@ -282,8 +282,13 @@ void BlobSimulation::renderMetaballs() {
         shader->setUniform(colorName, sf::Glsl::Vec4(blobs[i].getColor()));
     }
     
-    // Draw with shader
-    window.draw(quad, shader);
+    // Enable alpha blending for smooth edges
+    sf::RenderStates states;
+    states.shader = shader;
+    states.blendMode = sf::BlendAlpha;
+    
+    // Draw with shader and blending
+    window.draw(quad, states);
 }
 
 sf::Color BlobSimulation::generateRandomColor() {

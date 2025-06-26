@@ -43,26 +43,27 @@ void main() {
         totalColor += blobColors[i] * influence;
     }
     
-    // Dynamic threshold based on blob density for more organic shapes
-    float threshold = 15.0 + sin(totalInfluence * 0.1) * 2.0;
+    // Smooth threshold for better blending
+    float threshold = 20.0;
     
-    if (totalInfluence < threshold * 0.8) {
-        discard;
+    // Don't discard pixels - use alpha blending for smooth edges
+    if (totalInfluence < 0.1) {
+        FragColor = vec4(0.0);
+        return;
     }
     
     // Normalize color with influence weighting
     totalColor /= totalInfluence;
     
-    // Create organic edge with multiple smoothstep layers
-    float edge1 = smoothstep(threshold * 0.7, threshold * 0.9, totalInfluence);
-    float edge2 = smoothstep(threshold * 0.85, threshold * 1.15, totalInfluence);
-    float edge = edge1 * 0.7 + edge2 * 0.3;
+    // Create smooth transparent edges
+    float alpha = smoothstep(0.0, threshold, totalInfluence);
+    alpha = pow(alpha, 0.5); // Adjust curve for smoother falloff
     
-    // Add noise-like variation for organic feel
-    float variation = sin(totalInfluence * 0.5) * 0.05 + 1.0;
-    edge *= variation;
+    // Additional smoothing for very soft edges
+    float edgeSoftness = smoothstep(threshold * 0.3, threshold * 1.2, totalInfluence);
+    alpha = mix(alpha * 0.5, alpha, edgeSoftness);
     
-    totalColor.a = edge;
+    totalColor.a = alpha * totalColor.a;
     
     // Enhanced 3D effect with more organic gradients
     float centerInfluence = smoothstep(threshold, threshold * 2.5, totalInfluence);

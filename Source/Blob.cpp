@@ -67,8 +67,9 @@ void Blob::handleCollision(Blob& other) {
         other.distortionDirection = -direction;
         
         if (distance < minDistance) {
+            // Minimal separation to prevent complete overlap
             float overlap = minDistance - distance;
-            sf::Vector2f separation = direction * (overlap * 0.2f); // Reduced separation
+            sf::Vector2f separation = direction * (overlap * 0.05f); // Very small separation
             
             float totalMass = mass + other.mass;
             float massRatio1 = other.mass / totalMass;
@@ -77,29 +78,15 @@ void Blob::handleCollision(Blob& other) {
             position -= separation * massRatio1;
             other.position += separation * massRatio2;
             
-            sf::Vector2f v1 = position - previousPosition;
-            sf::Vector2f v2 = other.position - other.previousPosition;
-            
-            float restitution = 0.05f; // Very low restitution for sticky collisions
-            sf::Vector2f relativeVelocity = v1 - v2;
-            float velocityAlongNormal = relativeVelocity.x * direction.x + relativeVelocity.y * direction.y;
-            
-            // Only apply collision response if moving towards each other fast
-            if (velocityAlongNormal > -1.0f) return;
-            
-            float impulse = 2 * velocityAlongNormal / totalMass;
-            sf::Vector2f impulseVector = impulse * direction * restitution;
-            
-            // Apply very small impulse to minimize bouncing
-            previousPosition += impulseVector * other.mass * 0.1f;
-            other.previousPosition -= impulseVector * mass * 0.1f;
+            // No velocity damping - let gravity do the work
+            // This removes the bouncing/repelling behavior
         }
     }
 }
 
 bool Blob::shouldMerge(const Blob& other) const {
     float distance = calculateDistance(other);
-    float mergeThreshold = (radius + other.radius) * 0.6f; // Allow merging when overlapping significantly
+    float mergeThreshold = (radius + other.radius) * 0.8f; // Merge more easily
     return distance < mergeThreshold;
 }
 
