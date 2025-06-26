@@ -88,7 +88,7 @@ Examples:
 
 ```
 CppBlobs/
-├── src/
+├── Source/
 │   ├── main.cpp           # Entry point
 │   ├── Blob.cpp/h         # Blob physics and properties
 │   ├── BlobSimulation.cpp/h # Main simulation logic
@@ -106,13 +106,13 @@ CppBlobs/
 ## Customization
 
 ### Adding More Blobs
-Edit `src/BlobSimulation.cpp`:
+Edit `Source/BlobSimulation.cpp`:
 ```cpp
 const int numBlobs = 30; // Change this value
 ```
 
 ### Adjusting Physics
-Modify constants in `src/BlobSimulation.cpp`:
+Modify constants in `Source/BlobSimulation.cpp`:
 - `gravityStrength`: Attraction force between blobs
 - `minDistance`: Minimum distance for force calculations
 - `radiusDist`: Range of blob sizes (10-40 pixels)

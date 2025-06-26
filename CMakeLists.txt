@@ -35,10 +35,10 @@ FetchContent_MakeAvailable(googletest)
 
 # Main executable
 add_executable(blob_sim 
-    src/main.cpp
-    src/Blob.cpp
-    src/BlobSimulation.cpp
-    src/ShaderManager.cpp
+    Source/main.cpp
+    Source/Blob.cpp
+    Source/BlobSimulation.cpp
+    Source/ShaderManager.cpp
 )
 
 target_link_libraries(blob_sim 
@@ -49,7 +49,7 @@ target_link_libraries(blob_sim
     ${OPENGL_LIBRARIES}
 )
 
-target_include_directories(blob_sim PRIVATE src)
+target_include_directories(blob_sim PRIVATE Source)
 
 # Copy shaders to build directory
 file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})
@@ -58,7 +58,7 @@ file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})
 enable_testing()
 add_executable(blob_tests
     tests/blob_tests.cpp
-    src/Blob.cpp
+    Source/Blob.cpp
 )
 
 target_link_libraries(blob_tests
@@ -67,7 +67,7 @@ target_link_libraries(blob_tests
     sfml-system
 )
 
-target_include_directories(blob_tests PRIVATE src)
+target_include_directories(blob_tests PRIVATE Source)
 
 include(GoogleTest)
 gtest_discover_tests(blob_tests)

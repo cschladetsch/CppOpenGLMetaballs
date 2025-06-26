@@ -11,11 +11,23 @@ uniform vec4 blobColors[100];
 
 float metaball(vec2 pos, vec2 center, float radius) {
     float dist = length(pos - center);
-    if (dist > radius * 2.0) return 0.0;
+    if (dist > radius * 3.0) return 0.0;
     
-    // Metaball equation: f(x,y) = r^2 / ((x-cx)^2 + (y-cy)^2)
-    float influence = (radius * radius) / (dist * dist + 0.001);
-    return influence;
+    // Modified metaball equation for more organic shapes
+    // Using a higher power for smoother, more blob-like transitions
+    float normalizedDist = dist / radius;
+    float influence = 0.0;
+    
+    if (normalizedDist < 1.0) {
+        // Core influence with smooth falloff
+        influence = pow(1.0 - normalizedDist * normalizedDist, 3.0);
+    } else if (normalizedDist < 2.5) {
+        // Extended influence for better merging
+        float t = (normalizedDist - 1.0) / 1.5;
+        influence = 0.2 * pow(1.0 - t, 4.0);
+    }
+    
+    return influence * radius;
 }
 
 void main() {
@@ -31,23 +43,33 @@ void main() {
         totalColor += blobColors[i] * influence;
     }
     
-    // Threshold for metaball surface
-    float threshold = 1.0;
+    // Dynamic threshold based on blob density for more organic shapes
+    float threshold = 15.0 + sin(totalInfluence * 0.1) * 2.0;
     
-    if (totalInfluence < threshold) {
+    if (totalInfluence < threshold * 0.8) {
         discard;
     }
     
-    // Normalize color
+    // Normalize color with influence weighting
     totalColor /= totalInfluence;
     
-    // Smooth edges
-    float edge = smoothstep(threshold * 0.9, threshold * 1.1, totalInfluence);
+    // Create organic edge with multiple smoothstep layers
+    float edge1 = smoothstep(threshold * 0.7, threshold * 0.9, totalInfluence);
+    float edge2 = smoothstep(threshold * 0.85, threshold * 1.15, totalInfluence);
+    float edge = edge1 * 0.7 + edge2 * 0.3;
+    
+    // Add noise-like variation for organic feel
+    float variation = sin(totalInfluence * 0.5) * 0.05 + 1.0;
+    edge *= variation;
+    
     totalColor.a = edge;
     
-    // Add slight gradient for 3D effect
-    float centerInfluence = smoothstep(threshold, threshold * 2.0, totalInfluence);
-    totalColor.rgb *= 0.7 + 0.3 * centerInfluence;
+    // Enhanced 3D effect with more organic gradients
+    float centerInfluence = smoothstep(threshold, threshold * 2.5, totalInfluence);
+    float rimLight = 1.0 - smoothstep(threshold * 0.9, threshold * 1.1, totalInfluence);
+    
+    totalColor.rgb *= 0.6 + 0.4 * centerInfluence;
+    totalColor.rgb += vec3(0.1) * rimLight; // Subtle rim lighting
     
     FragColor = totalColor;
 }

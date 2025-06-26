@@ -54,7 +54,7 @@ cd build
 
 # Configure with CMake
 echo "Configuring with CMake..."
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
+cmake -G Ninja .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}CMake configuration failed!${NC}"
@@ -63,7 +63,7 @@ fi
 
 # Build
 echo "Building project..."
-make -j$(nproc)
+ninja
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}Build failed!${NC}"

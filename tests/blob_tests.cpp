@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/Blob.h"
+#include "../Source/Blob.h"
 #include <cmath>
 
 class BlobTest : public ::testing::Test {
