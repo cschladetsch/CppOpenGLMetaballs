@@ -164,6 +164,7 @@ void BlobSimulation::applyForces() {
 void BlobSimulation::checkMerging() {
     std::vector<Blob> newBlobs;
     std::vector<bool> merged(blobs.size(), false);
+    auto windowSize = window.getSize();
     
     for (size_t i = 0; i < blobs.size(); ++i) {
         if (merged[i]) continue;
@@ -172,7 +173,21 @@ void BlobSimulation::checkMerging() {
         for (size_t j = i + 1; j < blobs.size(); ++j) {
             if (merged[j]) continue;
             
-            if (blobs[i].shouldMerge(blobs[j])) {
+            // Calculate wrap-around distance
+            sf::Vector2f diff = blobs[j].getPosition() - blobs[i].getPosition();
+            
+            // Check for wrap-around distances
+            if (std::abs(diff.x) > windowSize.x / 2) {
+                diff.x = diff.x > 0 ? diff.x - windowSize.x : diff.x + windowSize.x;
+            }
+            if (std::abs(diff.y) > windowSize.y / 2) {
+                diff.y = diff.y > 0 ? diff.y - windowSize.y : diff.y + windowSize.y;
+            }
+            
+            float distance = std::sqrt(diff.x * diff.x + diff.y * diff.y);
+            float mergeThreshold = (blobs[i].getRadius() + blobs[j].getRadius()) * 0.95f; // Very easy merging
+            
+            if (distance < mergeThreshold) {
                 newBlobs.push_back(Blob::merge(blobs[i], blobs[j]));
                 merged[i] = true;
                 merged[j] = true;
@@ -186,9 +201,6 @@ void BlobSimulation::checkMerging() {
         }
     }
     
-    if (newBlobs.size() < blobs.size()) {
-        std::cout << "Merged: " << blobs.size() << " -> " << newBlobs.size() << " blobs" << std::endl;
-    }
     
     blobs = std::move(newBlobs);
 }
