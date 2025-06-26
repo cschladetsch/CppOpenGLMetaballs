@@ -12,12 +12,12 @@ bool ShaderManager::loadShaders() {
         return false;
     }
     
-    if (!loadShaderFromFile(*blobShader, "shaders/blob.vert", "shaders/blob.frag")) {
+    if (!loadShaderFromFile(*blobShader, "Shaders/blob.vert", "Shaders/blob.frag")) {
         std::cerr << "Failed to load blob shader!" << std::endl;
         return false;
     }
     
-    if (!loadShaderFromFile(*metaballShader, "shaders/metaball.vert", "shaders/metaball.frag")) {
+    if (!loadShaderFromFile(*metaballShader, "Shaders/metaball.vert", "Shaders/metaball.frag")) {
         std::cerr << "Failed to load metaball shader!" << std::endl;
         return false;
     }

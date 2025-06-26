@@ -93,10 +93,10 @@ CppBlobs/
 │   ├── Blob.cpp/h         # Blob physics and properties
 │   ├── BlobSimulation.cpp/h # Main simulation logic
 │   └── ShaderManager.cpp/h  # Shader loading and management
-├── shaders/
+├── Shaders/
 │   ├── blob.vert/frag     # Individual blob shaders
 │   └── metaball.vert/frag # Metaball morphing shaders
-├── tests/
+├── Tests/
 │   └── blob_tests.cpp     # Unit tests
 ├── CMakeLists.txt         # Build configuration
 ├── b                      # Build script
@@ -118,7 +118,7 @@ Modify constants in `Source/BlobSimulation.cpp`:
 - `radiusDist`: Range of blob sizes (10-40 pixels)
 
 ### Tweaking Visuals
-Edit `shaders/metaball.frag`:
+Edit `Shaders/metaball.frag`:
 - `threshold`: Surface definition threshold
 - Edge smoothing parameters
 - Color blending algorithm

@@ -52,12 +52,12 @@ target_link_libraries(blob_sim
 target_include_directories(blob_sim PRIVATE Source)
 
 # Copy shaders to build directory
-file(COPY shaders DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY Shaders DESTINATION ${CMAKE_BINARY_DIR})
 
 # Tests
 enable_testing()
 add_executable(blob_tests
-    tests/blob_tests.cpp
+    Tests/blob_tests.cpp
     Source/Blob.cpp
 )
 
