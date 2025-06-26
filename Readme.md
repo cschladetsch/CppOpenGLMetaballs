@@ -4,7 +4,7 @@ A C++23 metaball blob simulation using SFML and OpenGL shaders. Features fluid-l
 
 ## Demo
 
-![Demo](Resources/Demo1.gif]
+![Demo](Resources/Demo1.gif)
 
 ## Features
 
